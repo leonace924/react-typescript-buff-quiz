@@ -4,7 +4,11 @@ import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { deleteQuestionRequest, getQuestionsRequest } from '../../redux/actions/questionwebservice';
+import {
+  deleteQuestionRequest,
+  editQuestionRequest,
+  getQuestionsRequest,
+} from "../../redux/actions/questionwebservice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
       display: 'flex',
-      
       justifyContent: 'space-evenly',
     },
     questionDetails: {
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1
     },
     buttons: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
       textAlign: 'center',
       color: theme.palette.text.secondary,
       display: 'flex',
@@ -42,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'flex-end'
     },
-
   }),
 );
 
@@ -58,34 +60,54 @@ function QuestionListView({dispatch, questions}) {
   }
 
   const deleteQuestion =  (index) => {
-      dispatch(deleteQuestionRequest(index));
+    dispatch(deleteQuestionRequest(index));
   }
 
   const editQuestion = (index) => {
-   // TODO
+    dispatch(editQuestionRequest(index));
   }
 
   return (
     <Grid xs={5}>
       <h1>Questions</h1>
-      <Button variant="contained" color="primary" onClick={() => getMoreQuestions()}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => getMoreQuestions()}
+      >
         Fetch More Questions
       </Button>
       <Grid container spacing={3}>
         {questions.map((question, index) => (
-          <Grid item xs={12} key={index}>
+          <Grid item={true} xs={12} key={index}>
             <Paper className={classes.paper}>
               <Box className={classes.questionDetails}>
-                <Box>{question.question}</Box>
+                {/* <Box>
+                  {question.question}
+                </Box> */}
+                <Box>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: `${question.question}` }}
+                  />
+                </Box>
                 <Box>{question.category}</Box>
                 <Box>{question.difficulty}</Box>
               </Box>
               <Box className={classes.buttons}>
-              <Button variant="contained" color="primary" onClick={() => editQuestion(index)}>
-                Edit
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => deleteQuestion(index)}>
-Delete      </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => editQuestion(index)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => deleteQuestion(index)}
+                >
+                  Delete{" "}
+                </Button>
               </Box>
             </Paper>
           </Grid>
