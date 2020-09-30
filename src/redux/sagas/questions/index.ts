@@ -11,7 +11,7 @@ function* getQuestions() {
     if (result && result.response_code === 0) {
       yield put(actions.getQuestionsSuccess(result));
     } else {
-      yield put(actions.getQuestiondFailure(result));
+      yield put(actions.getQuestionsFailure(result));
     }
   } catch (error) {
     console.error(error);
