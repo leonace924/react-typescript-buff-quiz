@@ -11,6 +11,12 @@ import {
   updateQuestionRequest,
 } from "../../redux/actions/questionwebservice";
 
+interface QuestionFormValues {
+  question: string;
+  answers: string[];
+  checked: string[];
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     label: {
@@ -27,13 +33,16 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       color: theme.palette.text.secondary,
     },
+    errorText: {
+      color: "#f44336",
+    },
   })
 );
 
 // Specific: Validation Schema for update following requirement
 const UpdateSchema = Yup.object().shape({
   checked: Yup.array()
-    .required("Must have friends")
+    .required("Answers must be selected")
     .min(2, "At least two answer must be correct")
     .max(5, "Maximum answers are 5, not more"),
   answers: Yup.array().of(
@@ -71,7 +80,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllChecked(checked);
   }, [questions, selectedIndex]);
 
-  const initialValues = {
+  const initialValues: QuestionFormValues = {
     question: question?.question,
     answers: allAnswers,
     checked: allChecked,
@@ -91,10 +100,11 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
 
     newQuestion.correct_answers = correctAnswers;
     newQuestion.incorrect_answers = wrongAnswers;
-    console.log(newQuestion);
 
     dispatch(updateQuestionRequest(selectedIndex, newQuestion));
-    dispatch(editQuestionRequest(-1));
+
+    // I did like this to clear fields after submit
+    // dispatch(editQuestionRequest(-1));
   };
 
   const addAnswer = (values) => {
@@ -110,7 +120,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllAnswers(newArray);
 
     const checked: string[] = [];
-    questions[selectedIndex]?.correct_answers.map((answer) =>
+    question?.correct_answers?.map((answer) =>
       checked.push(newArray.indexOf(answer).toString())
     );
     setAllChecked(checked);
@@ -191,6 +201,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
                                           fullWidth
                                         />
                                       </Grid>
+
                                       <Grid item sm={2}>
                                         <Field
                                           color="primary"
@@ -200,6 +211,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
                                           component={Checkbox}
                                         />
                                       </Grid>
+
                                       <Grid item sm={2}>
                                         <Button
                                           variant="contained"
@@ -211,9 +223,12 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
                                       </Grid>
                                     </Grid>
                                   ))}
+
                                 <Grid item sm={12}>
                                   {typeof errors.checked === "string" ? (
-                                    <div>{errors.checked}</div>
+                                    <span className={classes.errorText}>
+                                      {errors.checked}
+                                    </span>
                                   ) : null}
                                 </Grid>
                               </>

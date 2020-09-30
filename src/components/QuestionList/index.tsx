@@ -50,8 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function QuestionListView({dispatch, questions}) {
   const classes = useStyles();
-  console.log(questions);
-
+  
   useEffect(() => {
   }, []);
 
