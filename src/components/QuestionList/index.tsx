@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function QuestionListView({dispatch, questions}) {
-
   const classes = useStyles();
+  console.log(questions);
 
   useEffect(() => {
   }, []);
@@ -59,7 +59,7 @@ function QuestionListView({dispatch, questions}) {
     dispatch(getQuestionsRequest());
   }
 
-  const deleteQuestion =  (index) => {
+  const deleteQuestion = (index) => {
     dispatch(deleteQuestionRequest(index));
   }
 
@@ -79,17 +79,10 @@ function QuestionListView({dispatch, questions}) {
       </Button>
       <Grid container spacing={3}>
         {questions.map((question, index) => (
-          <Grid item={true} xs={12} key={index}>
+          <Grid item xs={12} key={index}>
             <Paper className={classes.paper}>
               <Box className={classes.questionDetails}>
-                {/* <Box>
-                  {question.question}
-                </Box> */}
-                <Box>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: `${question.question}` }}
-                  />
-                </Box>
+                <Box>{question.question}</Box>
                 <Box>{question.category}</Box>
                 <Box>{question.difficulty}</Box>
               </Box>
