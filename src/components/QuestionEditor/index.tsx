@@ -45,13 +45,14 @@ const UpdateSchema = Yup.object().shape({
     .required("Answers must be selected")
     .min(2, "At least two answer must be correct")
     .max(5, "Maximum answers are 5, not more"),
-  answers: Yup.array().of(
-    Yup.string().required("Answers can't be an empty string")
-  ),
+  answers: Yup.array()
+    .of(Yup.string().required("Answers can't be an empty string"))
+    .min(2, "At least two answer must exist"),
   question: Yup.string().required("The question can't be an empty string"),
 });
 
 function QuestionEditor({ dispatch, questions, selectedIndex }) {
+  console.log(questions);
   const classes = useStyles();
   const [question, setQuestion] = useState<Question>({
     category: "",
@@ -68,13 +69,13 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   useEffect(() => {
     setQuestion(questions[selectedIndex]);
 
-    const answers: string[] = questions[selectedIndex]?.correct_answers
-      .concat(questions[selectedIndex]?.incorrect_answers)
+    const answers: string[] = questions[selectedIndex]?.incorrect_answers
+      ?.concat(questions[selectedIndex]?.correct_answers)
       .sort();
     setAllAnswers(answers);
 
     const checked: string[] = [];
-    questions[selectedIndex]?.correct_answers.map((answer) => {
+    questions[selectedIndex]?.correct_answers?.forEach((answer) => {
       checked.push(answers.indexOf(answer).toString());
     });
     setAllChecked(checked);
@@ -91,10 +92,10 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     let correctAnswers: string[] = [];
     let newQuestion: Question = question;
 
-    values.checked.map((check) =>
-      correctAnswers.push(values.answers[parseInt(check)])
-    );
-    correctAnswers.map(
+    values.checked
+      .filter((check) => parseInt(check) > -1)
+      .forEach((check) => correctAnswers.push(values.answers[parseInt(check)]));
+    correctAnswers.forEach(
       (answer) => (wrongAnswers = wrongAnswers.filter((x) => x !== answer))
     );
 
@@ -120,7 +121,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllAnswers(newArray);
 
     const checked: string[] = [];
-    question?.correct_answers?.map((answer) =>
+    question?.correct_answers?.forEach((answer) =>
       checked.push(newArray.indexOf(answer).toString())
     );
     setAllChecked(checked);

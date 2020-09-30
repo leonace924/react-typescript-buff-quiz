@@ -20,27 +20,25 @@ const initialQuizState: QuizState = {
 function questionReduxReducer(state = initialQuizState, action) {
   switch (action.type) {
     case sportwebservice.Types.GET_QUESTIONS_SUCCESS:
-      let newQuestions: Question[] = [...action.payload.results, ...state.questions];
+      let newQuestions: Question[] = [
+        ...action.payload.results,
+        ...state.questions,
+      ];
 
       // Convert question api format to project Question type format, for multiple correct answers
-      newQuestions.map((question, index) => {
-        let temp: string[] = [];
-        temp.push(question.correct_answer);
-        question.correct_answers = temp;
+      newQuestions = newQuestions.map((question) => {
+        let correct_answers: string[] = [question.correct_answer];
 
-        question.type = atob(question.type);
-        question.question = atob(question.question);
-        question.category = atob(question.category);
-        question.difficulty = atob(question.difficulty);
-        question.correct_answers = question?.correct_answers?.map((x) => atob(x));
-        question.incorrect_answers = question?.incorrect_answers?.map((x) => atob(x));
-        
-        return question;
+        return {
+          ...question,
+          correct_answers,
+        };
       });
 
       return {
         questions: newQuestions,
       };
+
     case sportwebservice.Types.DELETE_QUESTION_REQUEST:
       return {
         questions: [

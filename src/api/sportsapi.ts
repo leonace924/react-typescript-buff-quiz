@@ -5,12 +5,10 @@ import { QuestionResponse } from "../types/Question";
 
 export const getQuestions = () => {
   const url =
-    "https://opentdb.com/api.php?amount=10&category=21&encode=base64&difficulty=medium&type=multiple";
+    "https://opentdb.com/api.php?amount=10&category=21&difficulty=medium&type=multiple";
 
   return Axios.get(url)
     .then((response) => response.data)
-    .then((data: QuestionResponse) => {
-      return data;
-    })
+    // .then((data: QuestionResponse) => data)
     .catch((err) => console.log(`fetching the quiz failed ${err}`));
 };
