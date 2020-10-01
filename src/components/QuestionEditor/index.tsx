@@ -74,7 +74,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllAnswers(answers);
 
     const checked: string[] = [];
-    questions[selectedIndex]?.correct_answers?.forEach((answer) => 
+    questions[selectedIndex]?.correct_answers?.forEach((answer) =>
       checked.push(answers.indexOf(answer).toString())
     );
     setCheckFields(checked);
@@ -213,7 +213,9 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
                                         <Button
                                           variant="contained"
                                           color="primary"
-                                          onClick={() => removeAnswer(values, index)}
+                                          onClick={() =>
+                                            removeAnswer(values, index)
+                                          }
                                         >
                                           Remove
                                         </Button>
