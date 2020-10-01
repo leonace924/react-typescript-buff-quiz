@@ -87,7 +87,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   };
 
   const handleSubmit = (values) => {
-    let wrongAnswers: string[] = values.answers;
+    let wrongAnswers: string[] = [...values.answers];
     let correctAnswers: string[] = [];
     let newQuiz: Question = singleQuiz;
 
