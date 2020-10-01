@@ -52,9 +52,8 @@ const UpdateSchema = Yup.object().shape({
 });
 
 function QuestionEditor({ dispatch, questions, selectedIndex }) {
-  console.log(questions);
   const classes = useStyles();
-  const [question, setQuestion] = useState<Question>({
+  const [singleQuiz, setSingleQuiz] = useState<Question>({
     category: "",
     type: "",
     difficulty: "",
@@ -67,7 +66,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   const [allAnswers, setAllAnswers] = useState<string[]>([]);
 
   useEffect(() => {
-    setQuestion(questions[selectedIndex]);
+    setSingleQuiz(questions[selectedIndex]);
 
     const answers: string[] = questions[selectedIndex]?.incorrect_answers
       ?.concat(questions[selectedIndex]?.correct_answers)
@@ -82,7 +81,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   }, [questions, selectedIndex]);
 
   const initialValues: QuestionFormValues = {
-    question: question?.question,
+    question: singleQuiz?.question,
     answers: allAnswers,
     checked: allChecked,
   };
@@ -90,7 +89,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   const handleSubmit = (values) => {
     let wrongAnswers: string[] = values.answers;
     let correctAnswers: string[] = [];
-    let newQuestion: Question = question;
+    let newQuiz: Question = singleQuiz;
 
     values.checked
       .filter((check) => parseInt(check) > -1)
@@ -99,10 +98,10 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
       (answer) => (wrongAnswers = wrongAnswers.filter((x) => x !== answer))
     );
 
-    newQuestion.correct_answers = correctAnswers;
-    newQuestion.incorrect_answers = wrongAnswers;
+    newQuiz.correct_answers = correctAnswers;
+    newQuiz.incorrect_answers = wrongAnswers;
 
-    dispatch(updateQuestionRequest(selectedIndex, newQuestion));
+    dispatch(updateQuestionRequest(selectedIndex, newQuiz));
 
     // I did like this to clear fields after submit
     // dispatch(editQuestionRequest(-1));
@@ -121,7 +120,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllAnswers(newArray);
 
     const checked: string[] = [];
-    question?.correct_answers?.forEach((answer) =>
+    singleQuiz?.correct_answers?.forEach((answer) =>
       checked.push(newArray.indexOf(answer).toString())
     );
     setAllChecked(checked);
@@ -130,7 +129,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
   return (
     <Grid xs={7}>
       <h1>Editor (TODO)</h1>
-      {question && (
+      {singleQuiz && (
         <Grid container spacing={4} justify="center">
           <Grid item sm={8}>
             <Paper variant="outlined" className={classes.paper}>
