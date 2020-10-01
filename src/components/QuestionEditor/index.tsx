@@ -62,7 +62,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     correct_answers: [],
     incorrect_answers: [],
   });
-  const [allChecked, setAllChecked] = useState<string[]>([]);
+  const [checkFields, setCheckFields] = useState<string[]>([]);
   const [allAnswers, setAllAnswers] = useState<string[]>([]);
 
   useEffect(() => {
@@ -74,16 +74,16 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     setAllAnswers(answers);
 
     const checked: string[] = [];
-    questions[selectedIndex]?.correct_answers?.forEach((answer) => {
-      checked.push(answers.indexOf(answer).toString());
-    });
-    setAllChecked(checked);
+    questions[selectedIndex]?.correct_answers?.forEach((answer) => 
+      checked.push(answers.indexOf(answer).toString())
+    );
+    setCheckFields(checked);
   }, [questions, selectedIndex]);
 
   const initialValues: QuestionFormValues = {
     question: singleQuiz?.question,
     answers: allAnswers,
-    checked: allChecked,
+    checked: checkFields,
   };
 
   const handleSubmit = (values) => {
@@ -91,9 +91,9 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
     let correctAnswers: string[] = [];
     let newQuiz: Question = singleQuiz;
 
-    values.checked
-      .filter((check) => parseInt(check) > -1)
-      .forEach((check) => correctAnswers.push(values.answers[parseInt(check)]));
+    values.checked.forEach((check) =>
+      correctAnswers.push(values.answers[parseInt(check)])
+    );
     correctAnswers.forEach(
       (answer) => (wrongAnswers = wrongAnswers.filter((x) => x !== answer))
     );
@@ -109,21 +109,18 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
 
   const addAnswer = (values) => {
     setAllAnswers([...values.answers, ""]);
-    setAllChecked([...values.checked]);
+    setCheckFields([...values.checked]);
   };
 
-  const removeAnswer = (index) => {
-    const newArray: string[] = [
+  const removeAnswer = (values, index) => {
+    setAllAnswers([
       ...allAnswers.slice(0, index),
       ...allAnswers.slice(index + 1),
-    ];
-    setAllAnswers(newArray);
+    ]);
 
-    const checked: string[] = [];
-    singleQuiz?.correct_answers?.forEach((answer) =>
-      checked.push(newArray.indexOf(answer).toString())
-    );
-    setAllChecked(checked);
+    let checked: string[] = [];
+    checked = [...values.checked].filter((check) => parseInt(check) !== index);
+    setCheckFields(checked);
   };
 
   return (
@@ -216,7 +213,7 @@ function QuestionEditor({ dispatch, questions, selectedIndex }) {
                                         <Button
                                           variant="contained"
                                           color="primary"
-                                          onClick={() => removeAnswer(index)}
+                                          onClick={() => removeAnswer(values, index)}
                                         >
                                           Remove
                                         </Button>

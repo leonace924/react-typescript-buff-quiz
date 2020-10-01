@@ -10,7 +10,7 @@ import { Question } from "../types/Question";
 
 export interface QuizState {
   questions: Question[];
-  selectedIndex: Number;
+  selectedIndex: number;
 }
 const initialQuizState: QuizState = {
   questions: [],
@@ -20,18 +20,16 @@ const initialQuizState: QuizState = {
 function questionReduxReducer(state = initialQuizState, action) {
   switch (action.type) {
     case sportwebservice.Types.GET_QUESTIONS_SUCCESS:
-      let newQuestions: Question[] = [
-        ...action.payload.results,
-        ...state.questions,
-      ];
+      let newQuestions: Question[] = [];
 
       // Convert question api format to project Question type format, for multiple correct answers
-      newQuestions = newQuestions.map((question) => {
-        let correct_answers: string[] = [question.correct_answer];
-
+      newQuestions = [
+        ...action.payload.results,
+        ...state.questions,
+      ].map((question: Question) => {
         return {
           ...question,
-          correct_answers,
+          correct_answers: [question.correct_answer]
         };
       });
 
